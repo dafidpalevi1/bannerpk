@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PK Match Banner Editor</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; font-family:'Arial', sans-serif; }
+body { background:#121212; color:#fff; display:flex; flex-direction:column; align-items:center; padding:20px; }
+
+/* Banner utama */
+.banner-container {
+  position:relative;
+  width:360px;
+  max-width:90vw;
+  height:640px;
+  background: linear-gradient(135deg,#ff8c00,#ffa500);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 8px 25px rgba(0,0,0,0.7);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:16px;
+}
+
+/* Background kompleks */
+.banner-container::before {
+  content:"";
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0; left:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    linear-gradient(135deg, rgba(255,140,0,0.6), rgba(255,165,0,0.6)),
+    repeating-linear-gradient(
+      60deg,
+      rgba(255,255,255,0.12),
+      rgba(255,255,255,0.12) 6px,
+      transparent 6px,
+      transparent 12px
+    ),
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.18) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.18) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.12) 0%, transparent 60%),
+    radial-gradient(circle at 40% 60%, rgba(255,255,255,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 60% 40%, rgba(255,255,255,0.08) 0%, transparent 50%);
+}
+
+/* Container untuk logo sejajar */
+.logo-container {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:16px;
+  margin-bottom:10px;
+  z-index:2;
+}
+
+.tiktok-live-logo {
+  width:50px;
+  height:50px;
+}
+
+/* Title, Subtitle */
+.title { width:90%; text-align:center; margin:6px 0; padding:10px 14px; border-radius:14px; background:#ff4d4d; color:#fff; font-size:26px; font-weight:bold; text-shadow:1px 1px 5px rgba(0,0,0,0.4); z-index:2; }
+.subtitle { width:85%; text-align:center; margin:6px 0 16px 0; padding:8px 12px; border-radius:12px; background:#4d79ff; color:#fff; font-size:20px; text-shadow:1px 1px 5px rgba(0,0,0,0.4); z-index:2; }
+
+/* Users */
+.users-photo-container { display:flex; justify-content:space-around; width:100%; margin:16px 0; z-index:2; position:relative; }
+.user-box { display:flex; flex-direction:column; align-items:center; position:relative; z-index:2; }
+
+/* Agency  merah */
+#agency1 { background:#ff4d4d; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
+#user1 { width:100px; height:100px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; border:3px solid #ff4d4d; box-shadow:0 0 15px rgba(255,77,77,0.6); }
+#user1 img { width:100%; height:100%; object-fit:contain; border-radius:50%; background:#222; }
+#name1 { background:#ff4d4d; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
+
+/* Agency  biru */
+#agency2 { background:#4d79ff; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
+#user2 { width:100px; height:100px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; border:3px solid #4d79ff; box-shadow:0 0 15px rgba(77,121,255,0.6); }
+#user2 img { width:100%; height:100%; object-fit:contain; border-radius:50%; background:#222; }
+#name2 { background:#4d79ff; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
+
+/* VS */
+.vs-text { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:28px; font-weight:bold; z-index:2; text-shadow:1px 1px 4px rgba(0,0,0,0.5); }
+.vs-v { color:red; } .vs-s { color:blue; }
+
+/* Tanggal & Jam */
+.datetime { width:85%; margin:12px 0 20px 0; text-align:center; padding:8px; border-radius:12px; background:#32cd32; font-size:16px; font-weight:bold; color:#fff; box-shadow:0 0 8px rgba(0,0,0,0.3); z-index:2; }
+.datetime span { display:block; }
+
+/* Round & Booster */
+.round-booster { display:flex; justify-content:center; gap:16px; margin:12px 0; z-index:2; }
+#round-display { background:#ff4d4d; padding:8px 14px; border-radius:12px; font-weight:bold; color:#fff; box-shadow:0 0 6px rgba(255,77,77,0.6); }
+#booster-display { background:#4d79ff; padding:8px 14px; border-radius:12px; font-weight:bold; color:#fff; box-shadow:0 0 6px rgba(77,121,255,0.6); }
+
+/* Social media bawah */
+.social { position:relative; display:flex; justify-content:space-around; align-items:center; margin-top:16px; gap:20px; z-index:2; padding:8px 12px; border-radius:12px; overflow:hidden; }
+.social-bg-full { position:absolute; top:0; left:0; width:100%; height:100%; background:#4d79ff; border-radius:12px; z-index:0; }
+.social-item { position:relative; display:flex; flex-direction:column; align-items:center; gap:4px; z-index:1; }
+.social-item img { width:24px; height:24px; border-radius:6px; border:1px solid #fff; background:#fff; }
+.social-text { font-size:12px; color:#fff; text-shadow:0 0 3px #000; }
+
+/* Menu Edit */
+.menu-edit { width:360px; max-width:90vw; display:grid; grid-template-columns:1fr 1fr; gap:10px; background:#222; padding:16px; border-radius:14px; margin-bottom:20px; }
+.menu-edit label { font-size:12px; margin-bottom:2px; color:#fff; }
+.menu-edit input[type="text"], .menu-edit select, .menu-edit input[type="file"] { width:100%; padding:8px; border-radius:8px; border:none; background:#444; color:#fff; }
+.menu-edit input[type="text"]:focus, .menu-edit select:focus, .menu-edit input[type="file"]:focus { outline:2px solid #fff; }
+.menu-edit button { grid-column:1/-1; padding:12px; border:none; border-radius:10px; background:linear-gradient(135deg,#ff0,#f0f); color:#000; font-weight:bold; cursor:pointer; transition:0.3s; }
+.menu-edit button:hover { opacity:0.9; transform:scale(1.03); }
+
+@media (max-width:400px){ .banner-container{width:90vw;height:160vw;} .users-photo-container .user{width:80px;height:80px;} }
+</style>
+</head>
+<body>
+
+<div class="banner-container" id="banner">
+
+  <!-- Container logo sejajar -->
+  <div class="logo-container">
+    <img class="tiktok-live-logo" src="img/logotiktok.png" alt="TikTok Logo">
+    <img class="tiktok-live-logo" src="img/logovip.png" alt="VIP Logo">
+  </div>
+
+  <div class="title" id="title">Match Kuy</div>
+  <div class="subtitle" id="subtitle">PK Match Lokal</div>
+
+  <div class="users-photo-container">
+    <div class="user-box">
+      <div class="agency-name" id="agency1">Agency 1</div>
+      <div class="user" id="user1">User 1</div>
+      <div class="username" id="name1">Username 1</div>
+    </div>
+
+    <div class="vs-text"><span class="vs-v">V</span><span class="vs-s">S</span></div>
+
+    <div class="user-box">
+      <div class="agency-name" id="agency2">Agency 2</div>
+      <div class="user" id="user2">User 2</div>
+      <div class="username" id="name2">Username 2</div>
+    </div>
+  </div>
+
+  <div class="datetime">
+    <span id="date-display">14 September 2025</span>
+    <span id="time-display">Pukul 20:00 WIB</span>
+  </div>
+
+  <div class="round-booster">
+    <span id="round-display">Round 1</span>
+    <span id="booster-display">Off Booster</span>
+  </div>
+
+  <div class="social">
+    <div class="social-bg-full"></div>
+    <div class="social-item">
+      <img src="img/tiktok.png" alt="TikTok Logo">
+      <div class="social-text" id="tiktok-name">vip_agency</div>
+    </div>
+    <div class="social-item">
+      <img src="img/instagram.png" alt="Instagram Logo">
+      <div class="social-text" id="instagram-name">vip_agency</div>
+    </div>
+  </div>
+</div>
+
+<div class="menu-edit">
+  <label>Judul</label><input type="text" id="title-input" placeholder="Match Kuy">
+  
+  <label>Subjudul</label>
+  <select id="subtitle-input">
+    <option value="PK Match Lokal">PK Match Lokal</option>
+    <option value="PK Match Internasional">PK Match Internasional</option>
+  </select>
+
+  <label>Tanggal</label><input type="text" id="date-input" placeholder="14 September 2025">
+  <label>Jam</label><input type="text" id="time-input" placeholder="Pukul 20:00 WIB">
+
+  <label>Nama Agency 1</label><input type="text" id="agency1-input" placeholder="Agency 1">
+  <label>Nama Agency 2</label><input type="text" id="agency2-input" placeholder="Agency 2">
+
+  <label>Foto User 1</label><input type="file" id="user1-file" accept="image/*">
+  <label>Foto User 2</label><input type="file" id="user2-file" accept="image/*">
+
+  <label>Username 1</label><input type="text" id="name1-input" placeholder="Username1">
+  <label>Username 2</label><input type="text" id="name2-input" placeholder="Username2">
+
+  <label>Round</label><input type="text" id="round-input" placeholder="Round 1">
+  <label>Booster</label><input type="text" id="booster-input" placeholder="Off Booster">
+
+  <label>Nama TikTok</label><input type="text" id="tiktok-input" placeholder="vip_agency">
+  <label>Nama Instagram</label><input type="text" id="instagram-input" placeholder="vip_agency">
+
+  <button id="download">Download Banner</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+function updateText(inputId, displayId){
+  const input = document.getElementById(inputId);
+  const display = document.getElementById(displayId);
+  if(input && display){
+    input.addEventListener('input', e=>{ display.textContent = e.target.value; });
+  }
+}
+
+updateText('title-input','title');
+updateText('subtitle-input','subtitle');
+updateText('date-input','date-display');
+updateText('time-input','time-display');
+updateText('agency1-input','agency1');
+updateText('agency2-input','agency2');
+updateText('name1-input','name1');
+updateText('name2-input','name2');
+updateText('round-input','round-display');
+updateText('booster-input','booster-display');
+updateText('tiktok-input','tiktok-name');
+updateText('instagram-input','instagram-name');
+
+function readImage(input, userId){
+  if(input.files && input.files[0]){
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      const userDiv = document.getElementById(userId);
+      userDiv.innerHTML = '';
+      userDiv.appendChild(img);
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+document.getElementById('user1-file').addEventListener('change', e=>readImage(e.target,'user1'));
+document.getElementById('user2-file').addEventListener('change', e=>readImage(e.target,'user2'));
+
+document.getElementById('download').addEventListener('click', ()=>{
+  html2canvas(document.getElementById('banner')).then(canvas=>{
+    const link = document.createElement('a');
+    link.download='pk_match_banner.png';
+    link.href=canvas.toDataURL();
+    link.click();
+  });
+});
+</script>
+</body>
+</html>
