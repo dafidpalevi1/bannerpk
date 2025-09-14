@@ -34,8 +34,8 @@ body{background:#121212;color:#fff;display:flex;flex-direction:column;align-item
   justify-content:center;
   align-items:center;
   gap:16px;
-  margin-top:6px; /* dinaikkan */
-  margin-bottom:4px; /* rapat ke title */
+  margin-top:6px;
+  margin-bottom:4px;
   z-index:2;
 }
 .tiktok-live-logo{width:120px;height:60px;object-fit:contain;}
@@ -104,7 +104,7 @@ body{background:#121212;color:#fff;display:flex;flex-direction:column;align-item
 
 @media(max-width:400px){
   .banner-container{width:90vw;height:auto;}
-  .users-photo-container .user{width:75px;height:75px;}
+  #user1,#user2{width:75px;height:75px;}
   .social{gap:10px;}
 }
 </style>
@@ -227,7 +227,20 @@ document.getElementById('user2-file').addEventListener('change',e=>readImage(e.t
 
 document.getElementById('download').addEventListener('click',()=>{
   const node=document.getElementById('banner');
-  domtoimage.toPng(node)
+  const scale=3; // lebih tinggi = lebih tajam
+  const style={
+    transform:'scale('+scale+')',
+    transformOrigin:'top left',
+    width:node.offsetWidth+"px",
+    height:node.offsetHeight+"px"
+  };
+  const param={
+    width:node.offsetWidth*scale,
+    height:node.offsetHeight*scale,
+    style:style,
+    quality:1
+  };
+  domtoimage.toPng(node,param)
     .then(dataUrl=>{
       const link=document.createElement('a');
       link.download='pk_match_banner.png';
