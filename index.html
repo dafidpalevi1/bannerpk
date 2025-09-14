@@ -55,35 +55,57 @@ body { background:#121212; color:#fff; display:flex; flex-direction:column; alig
   justify-content:center;
   align-items:center;
   gap:20px;
-  margin-bottom:12px;
+  margin-bottom:-10px; /* naikkan logo */
   z-index:2;
 }
 
 .tiktok-live-logo {
-  width:70px;
-  height:70px;
+  width:130px;  /* diperbesar */
+  height:70px; /* diperbesar */
   object-fit:contain;
 }
 
 /* Title, Subtitle */
-.title { width:90%; text-align:center; margin:6px 0; padding:10px 14px; border-radius:14px; background:#ff4d4d; color:#fff; font-size:26px; font-weight:bold; text-shadow:1px 1px 5px rgba(0,0,0,0.4); z-index:2; }
-.subtitle { width:85%; text-align:center; margin:6px 0 16px 0; padding:8px 12px; border-radius:12px; background:#4d79ff; color:#fff; font-size:20px; text-shadow:1px 1px 5px rgba(0,0,0,0.4); z-index:2; }
+.title { 
+  width:90%; 
+  text-align:center; 
+  margin:8px 0; /* jarak ke logo */
+  padding:10px 14px; 
+  border-radius:14px; 
+  background:#ff4d4d; 
+  color:#fff; 
+  font-size:26px; 
+  font-weight:bold; 
+  text-shadow:1px 1px 5px rgba(0,0,0,0.4); 
+  z-index:2; 
+}
+.subtitle { 
+  width:85%; 
+  text-align:center; 
+  margin:6px 0 16px 0; 
+  padding:8px 12px; 
+  border-radius:12px; 
+  background:#4d79ff; 
+  color:#fff; 
+  font-size:20px; 
+  text-shadow:1px 1px 5px rgba(0,0,0,0.4); 
+  z-index:2; 
+}
 
 /* Users */
 .users-photo-container { display:flex; justify-content:space-around; width:100%; margin:16px 0; z-index:2; position:relative; }
 .user-box { display:flex; flex-direction:column; align-items:center; position:relative; z-index:2; }
 
-/* Agency 1 */
-#agency1 { background:#ff4d4d; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
-#user1 { width:100px; height:100px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; border:3px solid #ff4d4d; box-shadow:0 0 15px rgba(255,77,77,0.6); }
+/* Agency */
+#agency1 { background:#ff0000; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
+#user1 { width:100px; height:100px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; border:3px solid #ff0000; box-shadow:0 0 15px rgba(255,0,0,0.6); }
 #user1 img { width:100%; height:100%; object-fit:contain; border-radius:50%; background:#222; }
-#name1 { background:#ff4d4d; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
+#name1 { background:#ff0000; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
 
-/* Agency 2 */
-#agency2 { background:#4d79ff; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
-#user2 { width:100px; height:100px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; border:3px solid #4d79ff; box-shadow:0 0 15px rgba(77,121,255,0.6); }
+#agency2 { background:#0000ff; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
+#user2 { width:100px; height:100px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; border:3px solid #0000ff; box-shadow:0 0 15px rgba(0,0,255,0.6); }
 #user2 img { width:100%; height:100%; object-fit:contain; border-radius:50%; background:#222; }
-#name2 { background:#4d79ff; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
+#name2 { background:#0000ff; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
 
 /* VS */
 .vs-text { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:28px; font-weight:bold; z-index:2; text-shadow:1px 1px 4px rgba(0,0,0,0.5); }
@@ -131,17 +153,17 @@ body { background:#121212; color:#fff; display:flex; flex-direction:column; alig
 
   <div class="users-photo-container">
     <div class="user-box">
-      <div class="agency-name" id="agency1">Agency 1</div>
-      <div class="user" id="user1">User 1</div>
-      <div class="username" id="name1">Username 1</div>
+      <div class="agency-name" id="agency1">Agency</div>
+      <div class="user" id="user1">User</div>
+      <div class="username" id="name1">Username</div>
     </div>
 
     <div class="vs-text"><span class="vs-v">V</span><span class="vs-s">S</span></div>
 
     <div class="user-box">
-      <div class="agency-name" id="agency2">Agency 2</div>
-      <div class="user" id="user2">User 2</div>
-      <div class="username" id="name2">Username 2</div>
+      <div class="agency-name" id="agency2">Agency</div>
+      <div class="user" id="user2">User</div>
+      <div class="username" id="name2">Username</div>
     </div>
   </div>
 
@@ -151,8 +173,8 @@ body { background:#121212; color:#fff; display:flex; flex-direction:column; alig
   </div>
 
   <div class="round-booster">
-    <span id="round-display">Round 1</span>
-    <span id="booster-display">Off Booster</span>
+    <span id="round-display">1</span>
+    <span id="booster-display">Off</span>
   </div>
 
   <div class="social">
@@ -180,17 +202,21 @@ body { background:#121212; color:#fff; display:flex; flex-direction:column; alig
   <label>Tanggal</label><input type="text" id="date-input" placeholder="14 September 2025">
   <label>Jam</label><input type="text" id="time-input" placeholder="Pukul 20:00 WIB">
 
-  <label>Nama Agency 1</label><input type="text" id="agency1-input" placeholder="Agency 1">
-  <label>Nama Agency 2</label><input type="text" id="agency2-input" placeholder="Agency 2">
+  <label>Nama Agency 1</label><input type="text" id="agency1-input" placeholder="Agency">
+  <label>Nama Agency 2</label><input type="text" id="agency2-input" placeholder="Agency">
 
   <label>Foto User 1</label><input type="file" id="user1-file" accept="image/*">
   <label>Foto User 2</label><input type="file" id="user2-file" accept="image/*">
 
-  <label>Username 1</label><input type="text" id="name1-input" placeholder="Username1">
-  <label>Username 2</label><input type="text" id="name2-input" placeholder="Username2">
+  <label>Username 1</label><input type="text" id="name1-input" placeholder="Username">
+  <label>Username 2</label><input type="text" id="name2-input" placeholder="Username">
 
-  <label>Round</label><input type="text" id="round-input" placeholder="Round 1">
-  <label>Booster</label><input type="text" id="booster-input" placeholder="Off Booster">
+  <label>Round</label><input type="text" id="round-input" placeholder="1">
+  <label>Booster</label>
+  <select id="booster-input">
+    <option value="Off">Off Booster</option>
+    <option value="On">On Booster</option>
+  </select>
 
   <label>Nama TikTok</label><input type="text" id="tiktok-input" placeholder="vip_agency">
   <label>Nama Instagram</label><input type="text" id="instagram-input" placeholder="vip_agency">
