@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PK Match Banner Editor</title>
-<!-- Favicon browser lokal -->
 <link rel="icon" type="image/png" href="img/tiktok.png">
 <style>
 * { box-sizing:border-box; margin:0; padding:0; font-family:'Arial', sans-serif; }
@@ -25,12 +24,9 @@ body { background:#121212; color:#fff; display:flex; flex-direction:column; alig
   padding:16px;
 }
 
-.banner-container::before {
-  content:"";
+.banner-bg {
   position:absolute;
-  width:100%;
-  height:100%;
-  top:0; left:0;
+  inset:0;
   z-index:0;
   pointer-events:none;
   background:
@@ -95,12 +91,12 @@ body { background:#121212; color:#fff; display:flex; flex-direction:column; alig
 
 #agency1 { background:#ff0000; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
 #user1 { width:100px; height:100px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; border:3px solid #ff0000; box-shadow:0 0 15px rgba(255,0,0,0.6); }
-#user1 img { width:100%; height:100%; object-fit:contain; border-radius:50%; background:#222; }
+#user1 img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
 #name1 { background:#ff0000; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
 
 #agency2 { background:#0000ff; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
 #user2 { width:100px; height:100px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; border:3px solid #0000ff; box-shadow:0 0 15px rgba(0,0,255,0.6); }
-#user2 img { width:100%; height:100%; object-fit:contain; border-radius:50%; background:#222; }
+#user2 img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
 #name2 { background:#0000ff; color:#fff; padding:5px 10px; border-radius:10px; font-weight:bold; text-align:center; }
 
 .vs-text { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:28px; font-weight:bold; z-index:2; text-shadow:1px 1px 4px rgba(0,0,0,0.5); }
@@ -153,6 +149,7 @@ body { background:#121212; color:#fff; display:flex; flex-direction:column; alig
 <body>
 
 <div class="banner-container" id="banner">
+  <div class="banner-bg"></div>
 
   <div class="logo-container">
     <img class="tiktok-live-logo" src="img/logotiktok.png" alt="TikTok Logo">
@@ -235,7 +232,7 @@ body { background:#121212; color:#fff; display:flex; flex-direction:column; alig
   <button id="download">Download Banner</button>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
 <script>
 function updateText(inputId, displayId){
   const input = document.getElementById(inputId);
@@ -276,12 +273,17 @@ document.getElementById('user1-file').addEventListener('change', e=>readImage(e.
 document.getElementById('user2-file').addEventListener('change', e=>readImage(e.target,'user2'));
 
 document.getElementById('download').addEventListener('click', ()=>{
-  html2canvas(document.getElementById('banner')).then(canvas=>{
-    const link = document.createElement('a');
-    link.download='pk_match_banner.png';
-    link.href=canvas.toDataURL();
-    link.click();
-  });
+  const node = document.getElementById('banner');
+  domtoimage.toPng(node)
+    .then(function (dataUrl) {
+      const link = document.createElement('a');
+      link.download = 'pk_match_banner.png';
+      link.href = dataUrl;
+      link.click();
+    })
+    .catch(function (error) {
+      console.error('oops, something went wrong!', error);
+    });
 });
 </script>
 </body>
