@@ -1,254 +1,496 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PK Match Banner Editor</title>
-<link rel="icon" type="image/png" href="img/tiktok.png">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Banner PK - Final (gambar & ikon dipulihkan)</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- html2canvas untuk export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Arial',sans-serif;}
-body{background:#121212;color:#fff;display:flex;flex-direction:column;align-items:center;padding:20px;}
+  :root{
+    --width:420px; --height:880px;
+    --orange:#ff9a2a; --orange-deep:#ff7b1a;
+    --silver-light:#f5f5f5; --silver-dark:#a6a6a6;
+    --bg-dark:#07141b;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; min-height:100vh;
+    background: linear-gradient(180deg,#03060a 0%,#061022 100%);
+    font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    color:#fff; display:flex; flex-direction:column; align-items:center; gap:16px; padding:18px;
+  }
 
-.banner-container{
-  position:relative;
-  width:360px;
-  max-width:90vw;
-  height:640px;
-  background:linear-gradient(135deg,#ff8c00,#ffa500);
-  border-radius:20px;
-  overflow:hidden;
-  box-shadow:0 8px 25px rgba(0,0,0,0.7);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:12px;
-}
+  .banner-wrap{ display:flex; gap:18px; align-items:flex-start; width:100%; max-width:1200px; justify-content:center; }
+  .banner{
+    width:var(--width); height:var(--height); border-radius:14px; overflow:hidden; position:relative;
+    background: linear-gradient(180deg,var(--bg-dark) 0%, #08141d 100%); box-shadow: 0 18px 60px rgba(0,0,0,0.6);
+  }
 
-.banner-bg{position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:linear-gradient(135deg,rgba(0,255,64,0.6),rgba(0,217,255,0.6)),
-    repeating-linear-gradient(60deg,rgba(255,255,255,0.12),rgba(255,255,255,0.12) 6px,transparent 6px,transparent 12px);
-}
+  /* top petir */
+  .corner-left,.corner-right{
+    position:absolute; top:0; width:180px; height:170px;
+    background: linear-gradient(135deg,var(--orange-deep),var(--orange));
+    clip-path: polygon(0 0,100% 0,70% 35%,60% 55%,45% 55%,0 100%);
+    filter: drop-shadow(0 8px 18px rgba(255,140,40,0.15));
+    transform: translateY(-20px); z-index:4;
+  }
+  .corner-right{ right:0; transform: scaleX(-1) translateY(-20px); }
+  .corner-left{ left:0; }
+  .top-angles{ position:absolute; top:18px; left:16px; right:16px; height:20px;
+    border-top:6px solid transparent; border-image: linear-gradient(90deg, rgba(255,160,60,0.9), rgba(255,90,20,0.9)) 1; z-index:5;
+  }
 
-.logo-container{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:16px;
-  margin-top:6px;
-  margin-bottom:4px;
-  z-index:2;
-}
-.tiktok-live-logo{width:120px;height:60px;object-fit:contain;}
+  /* bottom decor */
+  .bottom-corner-left,.bottom-corner-right{
+    position:absolute; bottom:0; width:160px; height:140px;
+    background: linear-gradient(135deg,var(--orange),var(--orange-deep));
+    clip-path: polygon(0 35%,55% 45%,55% 60%,100% 100%,0 100%);
+    filter: drop-shadow(0 -6px 14px rgba(255,120,20,0.25)); z-index:4;
+  }
+  .bottom-corner-right{ right:0; transform: scaleX(-1); }
+  .bottom-line{ position:absolute; bottom:18px; left:20px; right:20px; height:4px;
+    border-top:4px solid transparent; border-image: linear-gradient(90deg, rgba(255,160,60,0.9), rgba(255,90,20,0.9)) 1; z-index:5;
+  }
 
-.title{
-  width:80%;text-align:center;
-  margin:4px 0;
-  padding:6px 10px;
-  border-radius:12px;
-  background:#ff4d4d;
-  color:#fff;
-  font-size:20px;
-  font-weight:bold;
-  text-shadow:1px 1px 5px rgba(0,0,0,0.4);
-  z-index:2;
-}
-.subtitle{
-  width:75%;text-align:center;
-  margin:4px 0 10px 0;
-  padding:5px 9px;
-  border-radius:10px;
-  background:#4d79ff;
-  color:#fff;
-  font-size:16px;
-  text-shadow:1px 1px 5px rgba(0,0,0,0.4);
-  z-index:2;
-}
+  .logos{ display:flex; gap:12px; align-items:center; justify-content:center; padding-top:50px; z-index:6; position:relative; }
+  .logos img{ height:34px; display:block; }
 
-/* USER BOX */
-.users-photo-container{display:flex;justify-content:space-around;width:100%;margin:12px 0;z-index:2;position:relative;}
-.user-box{display:flex;flex-direction:column;align-items:center;position:relative;z-index:2;}
-#agency1{background:#ff0000;color:#fff;padding:4px 8px;border-radius:8px;font-weight:bold;text-align:center;}
-#user1{width:90px;height:90px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;border:3px solid #ff0000;box-shadow:0 0 12px rgba(255,0,0,0.6);}
-#user1 img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-#name1{background:#ff0000;color:#fff;padding:4px 8px;border-radius:8px;font-weight:bold;text-align:center;}
+  .title{ text-align:center; margin-top:18px; font-family:"Montserrat",sans-serif; font-size:46px; font-weight:800; z-index:6; }
+  .subtitle{ text-align:center; margin-top:6px; color:#f6c46a; font-weight:700; font-size:14px; z-index:6; }
 
-#agency2{background:#0000ff;color:#fff;padding:4px 8px;border-radius:8px;font-weight:bold;text-align:center;}
-#user2{width:90px;height:90px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;border:3px solid #0000ff;box-shadow:0 0 12px rgba(0,0,255,0.6);}
-#user2 img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-#name2{background:#0000ff;color:#fff;padding:4px 8px;border-radius:8px;font-weight:bold;text-align:center;}
+  /* date box with clock icon on left */
+  .date-box{
+    width:86%; margin:18px auto; max-width:360px;
+    display:flex; align-items:center; gap:12px; justify-content:flex-start;
+    background: linear-gradient(90deg,#ff8848,#ff9f42); padding:12px 14px; border-radius:10px; z-index:6;
+  }
+  .date-icon{ 
+    width:44px; height:44px; 
+    background: #fff; 
+    display:flex; align-items:center; justify-content:center; 
+    border-radius:8px; flex-shrink:0; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .date-icon svg{ width:22px; height:22px; }
+  .date-icon svg circle, .date-icon svg path{ 
+    stroke:var(--orange); 
+    stroke-width:2; 
+    fill:none; 
+  }
+  .date-text{ color:#fff; font-weight:700; font-size:15px; line-height:1.15; text-transform:uppercase; text-align:left; }
 
-.vs-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:26px;font-weight:bold;z-index:2;text-shadow:1px 1px 4px rgba(0,0,0,0.5);}
-.vs-v{color:red;}.vs-s{color:blue;}
+  .vs-band{ display:flex; align-items:center; justify-content:center; gap:8px; margin:18px 32px; z-index:6; }
+  .vs-left,.vs-right{ flex:1; height:40px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-weight:700; text-transform:uppercase; font-size:15px; color:#fff; padding:0 8px; }
+  .vs-left{ background: linear-gradient(90deg,#bf6b2b,#ffb26b); text-align:right; }
+  .vs-right{ background: linear-gradient(90deg,#6637ff,#a45cff); text-align:left; }
+  .vs-center{ width:58px; height:58px; background: linear-gradient(180deg,#ff7b1a,#ffbf5f); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:22px; color:#111; border-radius:12px; }
 
-.datetime{width:85%;margin:10px 0 14px 0;text-align:center;padding:6px;border-radius:10px;background:#32cd32;font-size:14px;font-weight:bold;color:#fff;box-shadow:0 0 6px rgba(0,0,0,0.3);z-index:2;}
-.datetime span{display:block;}
+  .players{ display:flex; gap:30px; justify-content:center; margin-top:18px; z-index:6; }
+  .player{ width:150px; text-align:center; }
+  .avatar-wrap{ width:150px; height:150px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#fff; overflow:hidden; }
+  .avatar{ width:122px; height:122px; border-radius:50%; object-fit:cover; display:block; }
+  .name-tag{ margin-top:12px; font-weight:700; padding:10px 18px; border-radius:10px; font-size:15px; display:inline-block; min-width:120px; }
+  .player.left .name-tag{ background: linear-gradient(90deg,#ff8b25,#ffad56); }
+  .player.right .name-tag{ background: linear-gradient(90deg,#6637ff,#a45cff); }
 
-.round-booster{display:flex;justify-content:center;gap:12px;margin:8px 0;z-index:2;}
-.round-booster span{font-weight:bold;color:#fff;text-shadow:1px 1px 4px rgba(0,0,0,0.6);}
-#round-display{background:#ff4d4d;padding:4px 8px;border-radius:8px;box-shadow:0 0 6px rgba(255,77,77,0.6);}
-#booster-display{background:#4d79ff;padding:4px 8px;border-radius:8px;box-shadow:0 0 6px rgba(77,121,255,0.6);}
+  .rounds{ margin:34px auto 22px; width:86%; text-align:center; border-radius:30px; padding:12px 18px; background: linear-gradient(90deg,var(--silver-light),var(--silver-dark)); color:#111; font-weight:800; font-size:18px; z-index:6; }
+  .rounds .glow{ display:inline-block; padding:4px 8px; border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85)); box-shadow:0 8px 22px rgba(255,255,255,0.18); }
 
-.social{position:relative;display:flex;justify-content:space-around;align-items:center;margin-top:12px;gap:16px;z-index:2;padding:6px 10px;border-radius:10px;overflow:hidden;flex-wrap:wrap;}
-.social-bg-full{position:absolute;top:0;left:0;width:100%;height:100%;background:#4d79ff;border-radius:10px;z-index:0;}
-.social-item{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;z-index:1;}
-.social-item img{width:24px;height:24px;border-radius:6px;border:1px solid #fff;background:#fff;}
-.social-text{font-size:12px;color:#fff;text-shadow:0 0 3px #000;}
+  .bottom{ position:absolute; bottom:110px; left:0; right:0; display:flex; justify-content:center; align-items:center; gap:18px; z-index:6; }
+  .footer-item{ display:flex; align-items:center; gap:8px; font-weight:600; font-size:13px; color:#fff; background: rgba(255,255,255,0.03); padding:8px 10px; border-radius:10px; }
+  .footer-item img{ width:18px; height:18px; display:block; }
 
-/* MENU EDIT */
-.menu-edit{width:360px;max-width:90vw;display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#222;padding:14px;border-radius:12px;margin-top:20px;margin-bottom:20px;}
-.menu-edit label{font-size:12px;margin-bottom:2px;color:#fff;}
-.menu-edit input[type="text"],.menu-edit select,.menu-edit input[type="file"]{width:100%;padding:6px;border-radius:6px;border:none;background:#444;color:#fff;}
-.menu-edit input[type="text"]:focus,.menu-edit select:focus,.menu-edit input[type="file"]:focus{outline:2px solid #fff;}
-.menu-edit button{grid-column:1/-1;padding:10px;border:none;border-radius:8px;background:linear-gradient(135deg,#ff0,#f0f);color:#000;font-weight:bold;cursor:pointer;transition:0.3s;}
-.menu-edit button:hover{opacity:0.9;transform:scale(1.03);}
+  /* Editor */
+  .editor{ width:100%; max-width:720px; background: rgba(255,255,255,0.03); padding:14px; border-radius:12px; display:grid; gap:10px; box-sizing:border-box; }
+  .grid-3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+  .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .col{ display:flex; flex-direction:column; gap:6px; }
+  label{ font-size:13px; color:#eee; font-weight:700; }
+  input[type="text"], input[type="number"], input[type="file"], select{ background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); color:#fff; padding:8px 10px; border-radius:8px; }
+  select{ color:#fff; background: rgba(0,0,0,0.45); }
+  option{ background:#111; color:#fff; }
+  .small{ font-size:12px; color:rgba(255,255,255,0.7); }
 
-@media(max-width:400px){
-  .banner-container{width:90vw;height:auto;}
-  #user1,#user2{width:75px;height:75px;}
-  .social{gap:10px;}
-}
+  .row-buttons{ display:flex; gap:10px; }
+  .btn{ background: linear-gradient(90deg,var(--orange),var(--orange-deep)); border:none; color:#111; padding:10px 14px; border-radius:10px; font-weight:800; cursor:pointer; }
+
+  @media(max-width:980px){ .banner-wrap{ flex-direction:column; align-items:center; } .editor{ max-width:92vw; } .grid-3{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:560px){ .grid-2,.grid-3{ grid-template-columns:1fr; } .banner{ transform:scale(0.95); transform-origin:top; } }
+
 </style>
 </head>
 <body>
 
-<div class="banner-container" id="banner">
-  <div class="banner-bg"></div>
+<div class="banner-wrap">
+  <!-- BANNER -->
+  <div class="banner" id="banner">
+    <div class="corner-left"></div>
+    <div class="corner-right"></div>
+    <div class="top-angles"></div>
 
-  <div class="logo-container">
-    <img class="tiktok-live-logo" src="img/logotiktok.png" alt="TikTok Logo">
-    <img class="tiktok-live-logo" src="img/logovip.png" alt="VIP Logo">
-  </div>
-
-  <div class="title" id="title">Match Kuy</div>
-  <div class="subtitle" id="subtitle">PK Match Lokal</div>
-
-  <div class="users-photo-container">
-    <div class="user-box">
-      <div class="agency-name" id="agency1">Agency</div>
-      <div class="user" id="user1">User</div>
-      <div class="username" id="name1">Username</div>
+    <div class="logos">
+      <!-- first try local files (img/logovip.png etc.). If not found, JS will fallback to inline SVG -->
+      <img id="logoA" src="img/logovip.png" alt="VIP logo">
+      <img id="logoB" src="img/logotiktok.png" alt="TikTok logo" style="height:30px;">
     </div>
 
-    <div class="vs-text"><span class="vs-v">V</span><span class="vs-s">S</span></div>
+    <div class="title" id="bannerTitle">MATCH KUY</div>
+    <div class="subtitle" id="bannerSubtitle">PK MATCH LOKAL</div>
 
-    <div class="user-box">
-      <div class="agency-name" id="agency2">Agency</div>
-      <div class="user" id="user2">User</div>
-      <div class="username" id="name2">Username</div>
+    <div class="date-box">
+      <div class="date-icon" aria-hidden="true">
+        <!-- clock icon (inline SVG, guaranteed present) -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="#ff7b1a" stroke-width="1.5" fill="none"></circle>
+          <path d="M12 7v6l4 2" stroke-linecap="round" stroke-linejoin="round" stroke="#ff7b1a" stroke-width="1.5"></path>
+        </svg>
+      </div>
+      <div class="date-text" id="bannerDate">Selasa 16-09-2025<br>Pukul 21:00 WIB</div>
     </div>
-  </div>
 
-  <div class="datetime">
-    <span id="date-display">14 September 2025</span>
-    <span id="time-display">Pukul 20:00 WIB</span>
-  </div>
-
-  <div class="round-booster">
-    <span>Round: <span id="round-display">1</span></span>
-    <span>Booster: <span id="booster-display">Off</span></span>
-  </div>
-
-  <div class="social">
-    <div class="social-bg-full"></div>
-    <div class="social-item">
-      <img src="img/tiktok.jpg" alt="TikTok Logo">
-      <div class="social-text" id="tiktok-name">vip_agency</div>
+    <div class="vs-band">
+      <div class="vs-left" id="bannerAgency">VIP</div>
+      <div class="vs-center">VS</div>
+      <div class="vs-right" id="bannerOpponent">OREO</div>
     </div>
-    <div class="social-item">
-      <img src="img/ig.jpg" alt="Instagram Logo">
-      <div class="social-text" id="instagram-name">vin_industry_project</div>
+
+    <div class="players">
+      <div class="player left">
+        <div class="avatar-wrap">
+          <!-- try to use user's original unsplash images as initial visual (JS will fallback if needed) -->
+          <img id="bannerAvatarLeft" class="avatar" crossOrigin="anonymous" alt="avatar left">
+        </div>
+        <div class="name-tag" id="bannerPlayerLeft">moy.083</div>
+      </div>
+
+      <div class="player right">
+        <div class="avatar-wrap">
+          <img id="bannerAvatarRight" class="avatar" crossOrigin="anonymous" alt="avatar right">
+        </div>
+        <div class="name-tag" id="bannerPlayerRight">hokihoki742</div>
+      </div>
+    </div>
+
+    <div class="rounds" id="bannerRounds"><span class="glow">3 ROUND</span>  | ON BOOSTER</div>
+
+    <div class="bottom">
+      <div class="footer-item"><img id="tiktokIcon" alt="tiktok icon"><span id="bannerTiktok">@vip_agency</span></div>
+      <div class="footer-item"><img id="igIcon" alt="ig icon"><span id="bannerInstagram">@vin_industry_project</span></div>
+    </div>
+
+    <div class="bottom-corner-left"></div>
+    <div class="bottom-corner-right"></div>
+    <div class="bottom-line"></div>
+  </div>
+
+  <!-- EDITOR -->
+  <div class="editor" id="editor">
+    <div class="grid-3">
+      <div class="col"><label for="inputDay">Hari</label><input id="inputDay" type="text" value="Selasa"></div>
+      <div class="col"><label for="inputDate">Tanggal</label><input id="inputDate" type="text" value="16"></div>
+      <div class="col"><label for="inputMonth">Bulan</label><input id="inputMonth" type="text" value="09"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="col"><label for="inputYear">Tahun</label><input id="inputYear" type="text" value="2025"></div>
+      <div class="col"><label for="inputTime">Jam</label><input id="inputTime" type="text" value="21:00 WIB"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="col"><label for="inputAgency">Nama Agency (kiri)</label><input id="inputAgency" type="text" value="VIP"></div>
+      <div class="col"><label for="inputOpponent">Nama Lawan (kanan)</label><input id="inputOpponent" type="text" value="OREO"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="col"><label for="inputPlayerLeft">Nama Player Kiri</label><input id="inputPlayerLeft" type="text" value="moy.083"></div>
+      <div class="col"><label for="inputPlayerRight">Nama Player Kanan</label><input id="inputPlayerRight" type="text" value="hokihoki742"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="col"><label for="uploadLeft">Foto Player Kiri (upload)</label><input id="uploadLeft" type="file" accept="image/*"><div class="small">Jika upload, gambar akan dipakai dan disertakan saat download.</div></div>
+      <div class="col"><label for="uploadRight">Foto Player Kanan (upload)</label><input id="uploadRight" type="file" accept="image/*"><div class="small">Jika upload, gambar akan dipakai dan disertakan saat download.</div></div>
+    </div>
+
+    <div class="col"><label for="inputMatchType">Jenis PK Match</label><select id="inputMatchType"><option>PK MATCH LOKAL</option><option>PK MATCH INTERNASIONAL</option></select></div>
+
+    <div class="grid-2">
+      <div class="col"><label for="inputRound">Round (angka)</label><input id="inputRound" type="number" min="1" value="3"></div>
+      <div class="col"><label for="inputBooster">Booster</label><select id="inputBooster"><option>ON</option><option>OFF</option></select></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="col"><label for="inputTiktok">TikTok (teks)</label><input id="inputTiktok" type="text" value="@vip_agency"></div>
+      <div class="col"><label for="inputInstagram">Instagram (teks)</label><input id="inputInstagram" type="text" value="@vin_industry_project"></div>
+    </div>
+
+    <div class="row-buttons">
+      <button class="btn" id="downloadBtn">Download Banner (HD)</button>
+      <button class="btn" id="download1080Btn">Download 1080×1920</button>
+      <button class="btn" id="resetBtn">Reset Default</button>
     </div>
   </div>
 </div>
 
-<div class="menu-edit">
-  <label>Judul</label><input type="text" id="title-input" placeholder="Match Kuy">
-  <label>Subjudul</label>
-  <select id="subtitle-input">
-    <option value="PK Match Lokal">PK Match Lokal</option>
-    <option value="PK Match Internasional">PK Match Internasional</option>
-  </select>
-  <label>Tanggal</label><input type="text" id="date-input" placeholder="14 September 2025">
-  <label>Jam</label><input type="text" id="time-input" placeholder="Pukul 20:00 WIB">
-  <label>Nama Agency 1</label><input type="text" id="agency1-input" placeholder="Agency">
-  <label>Nama Agency 2</label><input type="text" id="agency2-input" placeholder="Agency">
-  <label>Foto User 1</label><input type="file" id="user1-file" accept="image/*">
-  <label>Foto User 2</label><input type="file" id="user2-file" accept="image/*">
-  <label>Username 1</label><input type="text" id="name1-input" placeholder="Username">
-  <label>Username 2</label><input type="text" id="name2-input" placeholder="Username">
-  <label>Round</label><input type="number" id="round-input" placeholder="1">
-  <label>Booster</label>
-  <select id="booster-input">
-    <option value="Off">Off Booster</option>
-    <option value="On">On Booster</option>
-  </select>
-  <label>Nama TikTok</label><input type="text" id="tiktok-input" placeholder="vip_agency">
-  <label>Nama Instagram</label><input type="text" id="instagram-input" placeholder="vin_industry_project">
-  <button id="download">Download Banner</button>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
 <script>
-function updateText(inputId,displayId){
-  const input=document.getElementById(inputId);
-  const display=document.getElementById(displayId);
-  if(input && display){
-    input.addEventListener('input',e=>{display.textContent=e.target.value;});
-  }
-}
-updateText('title-input','title');
-updateText('subtitle-input','subtitle');
-updateText('date-input','date-display');
-updateText('time-input','time-display');
-updateText('agency1-input','agency1');
-updateText('agency2-input','agency2');
-updateText('name1-input','name1');
-updateText('name2-input','name2');
-updateText('round-input','round-display');
-updateText('booster-input','booster-display');
-updateText('tiktok-input','tiktok-name');
-updateText('instagram-input','instagram-name');
+/* ========== fallback inline SVGs & helper ========== */
+function svgDataUrl(svg){ return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg); }
 
-function readImage(input,userId){
-  if(input.files && input.files[0]){
-    const reader=new FileReader();
-    reader.onload=e=>{
-      const img=document.createElement('img');
-      img.src=e.target.result;
-      const userDiv=document.getElementById(userId);
-      userDiv.innerHTML='';
-      userDiv.appendChild(img);
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-document.getElementById('user1-file').addEventListener('change',e=>readImage(e.target,'user1'));
-document.getElementById('user2-file').addEventListener('change',e=>readImage(e.target,'user2'));
+const LOGO_VIP_SVG = svgDataUrl('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="40"><rect rx="8" width="160" height="40" fill="#07141f"/><text x="16" y="26" font-family="Montserrat" font-size="18" fill="#fff">VIP</text></svg>');
+const LOGO_TT_SVG = svgDataUrl('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="40"><rect rx="8" width="120" height="40" fill="#07141f"/><text x="12" y="26" font-family="Montserrat" font-size="14" fill="#fff">TIKTOK</text></svg>');
+const TIKTOK_ICON_SVG = svgDataUrl('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 8v8a4 4 0 1 0 4-4V6h3" stroke="#ffffff" stroke-width="1.6" fill="none"/></svg>');
+const IG_ICON_SVG = svgDataUrl('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" stroke="#ffffff" stroke-width="1.6" fill="none"/><path d="M16 11.37A4 4 0 1 1 12.63 8" stroke="#ffffff" stroke-width="1.6" fill="none"/></svg>');
 
-document.getElementById('download').addEventListener('click',()=>{
-  const node=document.getElementById('banner');
-  const scale=3; // lebih tinggi = lebih tajam
-  const style={
-    transform:'scale('+scale+')',
-    transformOrigin:'top left',
-    width:node.offsetWidth+"px",
-    height:node.offsetHeight+"px"
-  };
-  const param={
-    width:node.offsetWidth*scale,
-    height:node.offsetHeight*scale,
-    style:style,
-    quality:1
-  };
-  domtoimage.toPng(node,param)
-    .then(dataUrl=>{
-      const link=document.createElement('a');
-      link.download='pk_match_banner.png';
-      link.href=dataUrl;
-      link.click();
-    })
-    .catch(error=>{console.error('oops, something went wrong!',error);});
+function defaultAvatarSVG(initials, bg, textColor){
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='100%' height='100%' fill='${bg}' /><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='Poppins, Montserrat, Arial' font-size='140' font-weight='800' fill='${textColor}'>${initials}</text></svg>`;
+  return svgDataUrl(svg);
+}
+function initials(name){ if(!name) return 'U'; return name.split(/\s+/).map(s=>s[0]).slice(0,2).join('').toUpperCase(); }
+
+/* ========== DOM nodes ========== */
+const logoA = document.getElementById('logoA');
+const logoB = document.getElementById('logoB');
+const tiktokIcon = document.getElementById('tiktokIcon');
+const igIcon = document.getElementById('igIcon');
+
+const bannerAvatarLeft = document.getElementById('bannerAvatarLeft');
+const bannerAvatarRight = document.getElementById('bannerAvatarRight');
+
+const inputPlayerLeft = document.getElementById('inputPlayerLeft');
+const inputPlayerRight = document.getElementById('inputPlayerRight');
+const uploadLeft = document.getElementById('uploadLeft');
+const uploadRight = document.getElementById('uploadRight');
+
+const inputDay = document.getElementById('inputDay');
+const inputDate = document.getElementById('inputDate');
+const inputMonth = document.getElementById('inputMonth');
+const inputYear = document.getElementById('inputYear');
+const inputTime = document.getElementById('inputTime');
+const inputAgency = document.getElementById('inputAgency');
+const inputOpponent = document.getElementById('inputOpponent');
+const inputMatchType = document.getElementById('inputMatchType');
+const inputRound = document.getElementById('inputRound');
+const inputBooster = document.getElementById('inputBooster');
+const inputTiktok = document.getElementById('inputTiktok');
+const inputInstagram = document.getElementById('inputInstagram');
+
+const bannerDate = document.getElementById('bannerDate');
+const bannerAgency = document.getElementById('bannerAgency');
+const bannerOpponent = document.getElementById('bannerOpponent');
+const bannerPlayerLeft = document.getElementById('bannerPlayerLeft');
+const bannerPlayerRight = document.getElementById('bannerPlayerRight');
+const bannerRounds = document.getElementById('bannerRounds');
+const bannerTiktok = document.getElementById('bannerTiktok');
+const bannerInstagram = document.getElementById('bannerInstagram');
+
+const downloadBtn = document.getElementById('downloadBtn');
+const download1080Btn = document.getElementById('download1080Btn');
+const resetBtn = document.getElementById('resetBtn');
+
+const banner = document.getElementById('banner');
+
+/* ========== initial images (try to use your files first) ========== */
+// prefer local logos (img/logovip.png, img/logotiktok.png). If those fail to load, replace with inline SVG.
+logoA.addEventListener('error', ()=>{ logoA.src = LOGO_VIP_SVG; });
+logoB.addEventListener('error', ()=>{ logoB.src = LOGO_TT_SVG; });
+// if logos have empty src (not provided), set inline default now
+if(!logoA.src) logoA.src = LOGO_VIP_SVG;
+if(!logoB.src) logoB.src = LOGO_TT_SVG;
+tiktokIcon.src = TIKTOK_ICON_SVG;
+igIcon.src = IG_ICON_SVG;
+
+/* avatars: try to show original unsplash visually, but fallback to inline SVG if fail.
+   (This preserves the look; for guaranteed inclusion in downloaded PNG prefer to upload) */
+const DEFAULT_LEFT_REMOTE = 'https://images.unsplash.com/photo-1607746882042-944635dfe10e?q=80&w=400&auto=format&fit=crop&crop=faces';
+const DEFAULT_RIGHT_REMOTE = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop&crop=faces';
+const DEFAULT_LEFT_INLINE = defaultAvatarSVG(initials(inputPlayerLeft.value), '#e7e3d8', '#222');
+const DEFAULT_RIGHT_INLINE = defaultAvatarSVG(initials(inputPlayerRight.value), '#dfe7ff', '#222');
+
+function setWithFallback(imgEl, preferred, fallback){
+  imgEl.src = preferred;
+  imgEl.onerror = ()=>{ imgEl.onerror = null; imgEl.src = fallback; };
+}
+setWithFallback(bannerAvatarLeft, DEFAULT_LEFT_REMOTE, DEFAULT_LEFT_INLINE);
+setWithFallback(bannerAvatarRight, DEFAULT_RIGHT_REMOTE, DEFAULT_RIGHT_INLINE);
+
+/* ========== live updates ========== */
+function updateDateText(){
+  const d = (inputDay.value||'').trim();
+  const dd = (inputDate.value||'').toString().padStart(2,'0');
+  const mm = (inputMonth.value||'').toString().padStart(2,'0');
+  const yy = (inputYear.value||'').trim();
+  const tm = (inputTime.value||'').trim();
+  const dayPart = d ? d + ' ' : '';
+  const datePart = (dd && mm && yy) ? `${dd}-${mm}-${yy}` : '';
+  if(datePart || tm){
+    bannerDate.innerHTML = `${dayPart}${datePart}<br>Pukul ${tm || ''}`.trim();
+  } else bannerDate.innerHTML = '';
+}
+function updateAll(){
+  document.getElementById('bannerSubtitle').textContent = inputMatchType.value || 'PK MATCH LOKAL';
+  bannerAgency.textContent = inputAgency.value || 'VIP';
+  bannerOpponent.textContent = inputOpponent.value || 'OREO';
+  bannerPlayerLeft.textContent = inputPlayerLeft.value || 'moy.083';
+  bannerPlayerRight.textContent = inputPlayerRight.value || 'hokihoki742';
+  const r = (inputRound.value || '').toString().trim() || '3';
+  const booster = inputBooster.value || 'ON';
+  bannerRounds.innerHTML = `<span class="glow">${r} ROUND</span>  | ${booster} BOOSTER`;
+  bannerTiktok.textContent = inputTiktok.value || '@vip_agency';
+  bannerInstagram.textContent = inputInstagram.value || '@vin_industry_project';
+  updateDateText();
+}
+/* attach */
+[
+  inputDay,inputDate,inputMonth,inputYear,inputTime,
+  inputAgency,inputOpponent,inputPlayerLeft,inputPlayerRight,
+  inputMatchType,inputRound,inputBooster,inputTiktok,inputInstagram
+].forEach(el=>{
+  el.addEventListener('input', updateAll);
+  el.addEventListener('change', updateAll);
 });
+
+/* upload preview (DataURL) */
+uploadLeft.addEventListener('change', e=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = ev => { bannerAvatarLeft.src = ev.target.result; };
+  r.readAsDataURL(f);
+});
+uploadRight.addEventListener('change', e=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = ev => { bannerAvatarRight.src = ev.target.result; };
+  r.readAsDataURL(f);
+});
+
+/* update default avatars if name changed and no upload */
+inputPlayerLeft.addEventListener('blur', ()=>{
+  if(!uploadLeft.files.length) bannerAvatarLeft.src = defaultAvatarSVG(initials(inputPlayerLeft.value||'Left'),'#e7e3d8','#222');
+});
+inputPlayerRight.addEventListener('blur', ()=>{
+  if(!uploadRight.files.length) bannerAvatarRight.src = defaultAvatarSVG(initials(inputPlayerRight.value||'Right'),'#dfe7ff','#222');
+});
+
+/* reset button */
+resetBtn.addEventListener('click', ()=>{
+  inputDay.value='Selasa'; inputDate.value='16'; inputMonth.value='09';
+  inputYear.value='2025'; inputTime.value='21:00 WIB';
+  inputAgency.value='VIP'; inputOpponent.value='OREO';
+  inputPlayerLeft.value='moy.083'; inputPlayerRight.value='hokihoki742';
+  inputMatchType.value='PK MATCH LOKAL'; inputRound.value='3'; inputBooster.value='ON';
+  inputTiktok.value='@vip_agency'; inputInstagram.value='@vin_industry_project';
+  uploadLeft.value=''; uploadRight.value='';
+  setWithFallback(bannerAvatarLeft, DEFAULT_LEFT_REMOTE, DEFAULT_LEFT_INLINE);
+  setWithFallback(bannerAvatarRight, DEFAULT_RIGHT_REMOTE, DEFAULT_RIGHT_INLINE);
+  logoA.src = 'img/logovip.png'; logoB.src = 'img/logotiktok.png';
+  updateAll();
+});
+
+/* initial update */
+updateAll();
+
+/* ========== prepare images for html2canvas (try to inline remote images) ==========
+   We'll attempt to fetch and convert image URLs to data URLs before rendering.
+   If fetch fails due to CORS, we silently skip — visual remains but canvas may not include remote images.
+   Best practice: use upload to guarantee inclusion.
+*/
+async function inlineImagesWithin(element){
+  const imgs = Array.from(element.querySelectorAll('img'));
+  const promises = imgs.map(async img=>{
+    // skip if already data URL
+    if(!img.src || img.src.startsWith('data:')) return;
+    // attempt to fetch and convert to dataURL
+    try{
+      const resp = await fetch(img.src, {mode:'cors'});
+      if(!resp.ok) throw new Error('fetch failed ' + resp.status);
+      const blob = await resp.blob();
+      return await new Promise((resolve, reject)=>{
+        const fr = new FileReader();
+        fr.onload = ()=>{ img.dataset._origSrc = img.src; img.src = fr.result; resolve(true); };
+        fr.onerror = ()=>resolve(false);
+        fr.readAsDataURL(blob);
+      });
+    }catch(err){
+      // can't inline; ignore
+      console.warn('Could not inline', img.src, err);
+      return false;
+    }
+  });
+  return Promise.all(promises);
+}
+
+/* download function using html2canvas with scale for HD */
+async function downloadBanner({ filename='banner.png', targetWidth=null } = {}){
+  // try to inline images first (best-effort)
+  await inlineImagesWithin(banner);
+
+  const rect = banner.getBoundingClientRect();
+  let scale = window.devicePixelRatio || 2;
+  if(targetWidth && targetWidth > 0){
+    scale = Math.max(1, targetWidth / Math.round(rect.width));
+  }
+  scale = Math.min(scale, 4);
+
+  // Konfigurasi html2canvas untuk hasil yang lebih baik
+  html2canvas(banner, { 
+    scale: scale,
+    useCORS: true, 
+    allowTaint: false, 
+    backgroundColor: null,
+    logging: false,
+    onclone: function(clonedDoc) {
+      // Pastikan semua elemen terlihat dengan benar
+      const clonedBanner = clonedDoc.getElementById('banner');
+      if (clonedBanner) {
+        clonedBanner.style.transform = 'none';
+        clonedBanner.style.boxShadow = 'none';
+      }
+    }
+  }).then(canvas=>{
+    // Tambahkan padding untuk memastikan tidak ada bagian yang terpotong
+    const finalCanvas = document.createElement('canvas');
+    const ctx = finalCanvas.getContext('2d');
+    
+    // Ukuran canvas akhir dengan sedikit padding
+    finalCanvas.width = canvas.width + 40;
+    finalCanvas.height = canvas.height + 40;
+    
+    // Isi dengan background transparan
+    ctx.fillStyle = 'transparent';
+    ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+    
+    // Gambar canvas asli di tengah
+    ctx.drawImage(canvas, 20, 20);
+    
+    finalCanvas.toBlob(blob=>{
+      if(!blob){ alert('Gagal membentuk gambar. Coba upload gambar dan ulangi.'); return; }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      // restore inlined images to original sources (if any)
+      banner.querySelectorAll('img').forEach(img=>{
+        if(img.dataset._origSrc){ img.src = img.dataset._origSrc; delete img.dataset._origSrc; }
+      });
+    }, 'image/png', 1);
+  }).catch(err=>{
+    console.error(err);
+    alert('Gagal membuat file. Coba upload gambar lokal dan ulangi.');
+  });
+}
+
+/* attach download buttons */
+downloadBtn.addEventListener('click', ()=> downloadBanner({ filename:'banner-hd.png' }) );
+download1080Btn.addEventListener('click', ()=> downloadBanner({ filename:'banner-1080x1920.png', targetWidth:1080 }) );
+
 </script>
 </body>
 </html>
