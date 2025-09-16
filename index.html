@@ -285,7 +285,7 @@
     color: #fff;
     background: rgba(255, 255, 255, 0.03);
     padding: 8px 10px;
-    border-radius: 10px;
+    borderRadius: 10px;
   }
   .footer-item img { width: 18px; height: 18px; display: block; }
 
@@ -384,7 +384,7 @@
           <path d="M7 3l-1 1m10-1l1 1" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </div>
-      <div class="date-text" id="bannerDate">Selasa 16-09-2025<br>Pukul 06:42 WIB</div>
+      <div class="date-text" id="bannerDate">Selasa 16-09-2025<br>Pukul 06:45 WIB</div>
     </div>
 
     <div class="vs-band">
@@ -431,7 +431,7 @@
 
     <div class="grid-2">
       <div class="col"><label for="inputYear">Tahun</label><input id="inputYear" type="text" value="2025"></div>
-      <div class="col"><label for="inputTime">Jam</label><input id="inputTime" type="text" value="06:42 WIB"></div>
+      <div class="col"><label for="inputTime">Jam</label><input id="inputTime" type="text" value="06:45 WIB"></div>
     </div>
 
     <div class="grid-2">
@@ -627,7 +627,7 @@ resetBtn.addEventListener('click', () => {
   inputDate.value = '16';
   inputMonth.value = '09';
   inputYear.value = '2025';
-  inputTime.value = '06:42 WIB';
+  inputTime.value = '06:45 WIB';
   inputAgency.value = 'VIP';
   inputOpponent.value = 'VIP';
   inputPlayerLeft.value = 'username';
@@ -653,25 +653,52 @@ updateAll();
 async function inlineImagesWithin(element) {
   const imgs = Array.from(element.querySelectorAll('img'));
   const promises = imgs.map(async img => {
-    if (!img.src || img.src.startsWith('data:')) return true;
+    // Skip if already data URL or if it's an uploaded file
+    if (!img.src || img.src.startsWith('data:') || img.src.includes('blob:')) return true;
+    
     try {
-      const resp = await fetch(img.src, { mode: 'cors', cache: 'no-cache' });
+      // For external images, try to fetch them
+      const resp = await fetch(img.src, { mode: 'cors' });
       if (!resp.ok) throw new Error('fetch failed ' + resp.status);
       const blob = await resp.blob();
       return new Promise((resolve) => {
         const fr = new FileReader();
-        fr.onload = () => { img.dataset._origSrc = img.src; img.src = fr.result; resolve(true); };
-        fr.onerror = () => { console.warn('Failed to read image as DataURL', img.src); resolve(false); };
+        fr.onload = () => { 
+          img.dataset._origSrc = img.src; 
+          img.src = fr.result; 
+          resolve(true); 
+        };
+        fr.onerror = () => { 
+          console.warn('Failed to read image as DataURL', img.src); 
+          resolve(false); 
+        };
         fr.readAsDataURL(blob);
       });
     } catch (err) {
       console.warn('Could not inline', img.src, err);
+      // Use fallback SVGs for specific images
       if (img.id === 'bannerAvatarLeft') {
         img.src = defaultAvatarSVG(initials(inputPlayerLeft.value || 'username'), '#e7e3d8', '#222');
         return true;
       }
       if (img.id === 'bannerAvatarRight') {
         img.src = defaultAvatarSVG(initials(inputPlayerRight.value || 'username'), '#dfe7ff', '#222');
+        return true;
+      }
+      if (img.id === 'logoA') {
+        img.src = LOGO_VIP_SVG;
+        return true;
+      }
+      if (img.id === 'logoB') {
+        img.src = LOGO_TT_SVG;
+        return true;
+      }
+      if (img.id === 'tiktokIcon') {
+        img.src = TIKTOK_ICON_SVG;
+        return true;
+      }
+      if (img.id === 'igIcon') {
+        img.src = IG_ICON_SVG;
         return true;
       }
       return false;
@@ -682,113 +709,105 @@ async function inlineImagesWithin(element) {
 
 /* download function using html2canvas with scale for HD */
 async function downloadBanner({ filename = 'banner.png' } = {}) {
-  // Inline all images
-  const inlined = await inlineImagesWithin(banner);
-  if (!inlined.every(Boolean)) {
-    console.warn('Some images failed to inline, using fallbacks');
-  }
+  // Show loading indicator
+  const originalText = downloadBtn.textContent;
+  downloadBtn.textContent = 'Loading...';
+  downloadBtn.disabled = true;
+  
+  try {
+    // Inline all images and handle failures
+    const inlined = await inlineImagesWithin(banner);
+    if (!inlined.every(Boolean)) {
+      console.warn('Some images failed to inline, using fallbacks where possible');
+    }
 
-  // Ensure fonts are loaded
-  await document.fonts.ready;
+    // Ensure fonts are loaded
+    await document.fonts.ready;
 
-  // Clone the banner to apply styles explicitly
-  const clonedBanner = banner.cloneNode(true);
-  document.body.appendChild(clonedBanner);
-  clonedBanner.style.position = 'absolute';
-  clonedBanner.style.left = '-9999px';
-  clonedBanner.style.width = '420px';
-  clonedBanner.style.height = '880px';
-  clonedBanner.style.transform = 'none';
-  clonedBanner.style.boxShadow = '0 18px 60px rgba(0, 0, 0, 0.6)';
-  clonedBanner.style.background = 'linear-gradient(180deg, #07141b 0%, #08141d 100%)';
-  clonedBanner.style.borderRadius = '14px';
-  clonedBanner.style.fontFamily = '"Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial';
-  clonedBanner.style.overflow = 'hidden';
-
-  // Apply styles to cloned decorative elements
-  const clonedCorners = clonedBanner.querySelectorAll('.corner-left, .corner-right, .bottom-corner-left, .bottom-corner-right');
-  clonedCorners.forEach(corner => {
-    const style = getComputedStyle(corner);
-    corner.style.position = 'absolute';
-    corner.style.width = style.width;
-    corner.style.height = style.height;
-    corner.style.background = style.background;
-    corner.style.clipPath = style.clipPath;
-    corner.style.filter = style.filter;
-    corner.style.transform = style.transform;
-    corner.style.zIndex = '4';
-    if (corner.classList.contains('corner-left')) corner.style.left = '0';
-    if (corner.classList.contains('corner-right')) corner.style.right = '0';
-    if (corner.classList.contains('bottom-corner-left')) corner.style.bottom = '0';
-    if (corner.classList.contains('bottom-corner-right')) corner.style.bottom = '0';
-  });
-
-  const clonedTopAngles = clonedBanner.querySelector('.top-angles');
-  if (clonedTopAngles) {
-    const style = getComputedStyle(clonedTopAngles);
-    clonedTopAngles.style.position = 'absolute';
-    clonedTopAngles.style.top = style.top;
-    clonedTopAngles.style.left = style.left;
-    clonedTopAngles.style.right = style.right;
-    clonedTopAngles.style.height = style.height;
-    clonedTopAngles.style.borderTop = style.borderTop;
-    clonedTopAngles.style.borderImage = style.borderImage;
-    clonedTopAngles.style.zIndex = '5';
-  }
-
-  const clonedBottomLine = clonedBanner.querySelector('.bottom-line');
-  if (clonedBottomLine) {
-    const style = getComputedStyle(clonedBottomLine);
-    clonedBottomLine.style.position = 'absolute';
-    clonedBottomLine.style.bottom = style.bottom;
-    clonedBottomLine.style.left = style.left;
-    clonedBottomLine.style.right = style.right;
-    clonedBottomLine.style.height = style.height;
-    clonedBottomLine.style.borderTop = style.borderTop;
-    clonedBottomLine.style.borderImage = style.borderImage;
-    clonedBottomLine.style.zIndex = '5';
-  }
-
-  // Explicitly set styles for cloned elements
-  const clonedTitle = clonedBanner.querySelector('.title');
-  if (clonedTitle) clonedTitle.style.fontFamily = '"Montserrat", sans-serif';
-
-  const clonedDateBox = clonedBanner.querySelector('.date-box');
-  if (clonedDateBox) clonedDateBox.style.justifyContent = 'center';
-
-  // Render with html2canvas
-  html2canvas(clonedBanner, {
-    scale: 3,
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: null,
-    logging: true,
-    willReadFrequently: true,
-    foreignObjectRendering: true
-  }).then(canvas => {
-    canvas.toBlob(blob => {
-      if (!blob) {
-        alert('Gagal membentuk gambar. Coba upload gambar lokal dan ulangi.');
-        document.body.removeChild(clonedBanner);
-        return;
+    // Create a clone of the banner for rendering
+    const clonedBanner = banner.cloneNode(true);
+    clonedBanner.id = 'cloned-banner-' + Date.now();
+    document.body.appendChild(clonedBanner);
+    
+    // Position the clone off-screen
+    clonedBanner.style.position = 'fixed';
+    clonedBanner.style.left = '-9999px';
+    clonedBanner.style.top = '0';
+    clonedBanner.style.width = '420px';
+    clonedBanner.style.height = '880px';
+    clonedBanner.style.transform = 'none';
+    
+    // Wait for images to load in the clone
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Render with html2canvas
+    html2canvas(clonedBanner, {
+      scale: 3,
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: null,
+      logging: false,
+      onclone: function(clonedDoc, element) {
+        // Ensure all styles are properly applied
+        const clonedElement = clonedDoc.getElementById(clonedBanner.id);
+        if (clonedElement) {
+          clonedElement.style.width = '420px';
+          clonedElement.style.height = '880px';
+          clonedElement.style.boxSizing = 'border-box';
+        }
       }
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      // Restore original image sources
-      banner.querySelectorAll('img').forEach(img => {
-        if (img.dataset._origSrc) { img.src = img.dataset._origSrc; delete img.dataset._origSrc; }
-      });
+    }).then(canvas => {
+      // Remove the clone
       document.body.removeChild(clonedBanner);
-    }, 'image/png', 1);
-  }).catch(err => {
-    console.error('html2canvas error:', err);
-    alert('Gagal membuat file. Periksa console untuk detail dan pastikan gambar di-upload lokal.');
-    document.body.removeChild(clonedBanner);
-  });
+      
+      if (canvas.width === 0 || canvas.height === 0) {
+        throw new Error('Canvas is empty');
+      }
+      
+      canvas.toBlob(blob => {
+        if (!blob) {
+          throw new Error('Blob creation failed');
+        }
+        
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        
+        // Restore original image sources
+        banner.querySelectorAll('img').forEach(img => {
+          if (img.dataset._origSrc) { 
+            img.src = img.dataset._origSrc; 
+            delete img.dataset._origSrc; 
+          }
+        });
+        
+        // Restore button state
+        downloadBtn.textContent = originalText;
+        downloadBtn.disabled = false;
+      }, 'image/png', 1);
+    }).catch(err => {
+      document.body.removeChild(clonedBanner);
+      throw err;
+    });
+  } catch (err) {
+    console.error('Download error:', err);
+    alert('Gagal membuat file. Pastikan untuk mengupload gambar lokal untuk hasil terbaik.');
+    
+    // Restore button state
+    downloadBtn.textContent = originalText;
+    downloadBtn.disabled = false;
+    
+    // Restore original image sources
+    banner.querySelectorAll('img').forEach(img => {
+      if (img.dataset._origSrc) { 
+        img.src = img.dataset._origSrc; 
+        delete img.dataset._origSrc; 
+      }
+    });
+  }
 }
 
 /* attach download button */
