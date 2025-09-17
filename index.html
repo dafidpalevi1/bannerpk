@@ -49,62 +49,9 @@
     border-radius: 14px;
     overflow: hidden;
     position: relative;
-    background: linear-gradient(180deg, var(--bg-dark) 0%, #08141d 100%);
+    background: url('img/latar.jpeg') no-repeat center center; /* Placeholder until you upload latar.jpeg */
+    background-size: cover;
     box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6);
-  }
-
-  /* top petir */
-  .corner-left, .corner-right {
-    position: absolute;
-    top: 0;
-    width: 180px;
-    height: 170px;
-    background: linear-gradient(135deg, var(--orange-deep), var(--orange));
-    clip-path: polygon(0 0, 100% 0, 70% 35%, 60% 55%, 45% 55%, 0 100%);
-    filter: drop-shadow(0 8px 18px rgba(255, 140, 40, 0.15));
-    transform: translateY(-20px);
-    z-index: 4;
-  }
-  .corner-right {
-    right: 0;
-    transform: scaleX(-1) translateY(-20px);
-  }
-  .corner-left { left: 0; }
-  .top-angles {
-    position: absolute;
-    top: 18px;
-    left: 16px;
-    right: 16px;
-    height: 20px;
-    border-top: 6px solid transparent;
-    border-image: linear-gradient(90deg, rgba(255, 160, 60, 0.9), rgba(255, 90, 20, 0.9)) 1;
-    z-index: 5;
-  }
-
-  /* bottom decor */
-  .bottom-corner-left, .bottom-corner-right {
-    position: absolute;
-    bottom: 0;
-    width: 160px;
-    height: 140px;
-    background: linear-gradient(135deg, var(--orange), var(--orange-deep));
-    clip-path: polygon(0 35%, 55% 45%, 55% 60%, 100% 100%, 0 100%);
-    filter: drop-shadow(0 -6px 14px rgba(255, 120, 20, 0.25));
-    z-index: 4;
-  }
-  .bottom-corner-right {
-    right: 0;
-    transform: scaleX(-1);
-  }
-  .bottom-line {
-    position: absolute;
-    bottom: 18px;
-    left: 20px;
-    right: 20px;
-    height: 4px;
-    border-top: 4px solid transparent;
-    border-image: linear-gradient(90deg, rgba(255, 160, 60, 0.9), rgba(255, 90, 20, 0.9)) 1;
-    z-index: 5;
   }
 
   .logos {
@@ -364,9 +311,6 @@
 <div class="banner-wrap">
   <!-- BANNER -->
   <div class="banner" id="banner">
-    <div class="corner-left"></div>
-    <div class="corner-right"></div>
-    <div class="top-angles"></div>
 
     <div class="logos">
       <img id="logoA" src="img/logovip.png" alt="VIP logo">
@@ -384,7 +328,7 @@
           <path d="M7 3l-1 1m10-1l1 1" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </div>
-      <div class="date-text" id="bannerDate">Selasa 16-09-2025<br>Pukul 06:45 WIB</div>
+      <div class="date-text" id="bannerDate">Rabu 17-09-2025<br>Pukul 17:15 WIB</div> <!-- Updated to current date and time -->
     </div>
 
     <div class="vs-band">
@@ -415,23 +359,19 @@
       <div class="footer-item"><img id="tiktokIcon" alt="tiktok icon"><span id="bannerTiktok">@vip_agency</span></div>
       <div class="footer-item"><img id="igIcon" alt="ig icon"><span id="bannerInstagram">@vin_industry_project</span></div>
     </div>
-
-    <div class="bottom-corner-left"></div>
-    <div class="bottom-corner-right"></div>
-    <div class="bottom-line"></div>
   </div>
 
   <!-- EDITOR -->
   <div class="editor" id="editor">
     <div class="grid-3">
-      <div class="col"><label for="inputDay">Hari</label><input id="inputDay" type="text" value="Selasa"></div>
-      <div class="col"><label for="inputDate">Tanggal</label><input id="inputDate" type="text" value="16"></div>
+      <div class="col"><label for="inputDay">Hari</label><input id="inputDay" type="text" value="Rabu"></div>
+      <div class="col"><label for="inputDate">Tanggal</label><input id="inputDate" type="text" value="17"></div>
       <div class="col"><label for="inputMonth">Bulan</label><input id="inputMonth" type="text" value="09"></div>
     </div>
 
     <div class="grid-2">
       <div class="col"><label for="inputYear">Tahun</label><input id="inputYear" type="text" value="2025"></div>
-      <div class="col"><label for="inputTime">Jam</label><input id="inputTime" type="text" value="06:45 WIB"></div>
+      <div class="col"><label for="inputTime">Jam</label><input id="inputTime" type="text" value="17:15 WIB"></div>
     </div>
 
     <div class="grid-2">
@@ -623,11 +563,11 @@ inputPlayerRight.addEventListener('blur', () => {
 
 /* reset button */
 resetBtn.addEventListener('click', () => {
-  inputDay.value = 'Selasa';
-  inputDate.value = '16';
+  inputDay.value = 'Rabu';
+  inputDate.value = '17';
   inputMonth.value = '09';
   inputYear.value = '2025';
-  inputTime.value = '06:45 WIB';
+  inputTime.value = '17:15 WIB';
   inputAgency.value = 'VIP';
   inputOpponent.value = 'VIP';
   inputPlayerLeft.value = 'username';
@@ -729,14 +669,15 @@ async function downloadBanner({ filename = 'banner.png' } = {}) {
     clonedBanner.id = 'cloned-banner-' + Date.now();
     document.body.appendChild(clonedBanner);
     
-    // Position the clone off-screen
-    clonedBanner.style.position = 'fixed';
-    clonedBanner.style.left = '-9999px';
+    // Position and style the clone to match original
+    clonedBanner.style.position = 'absolute';
+    clonedBanner.style.left = '0';
     clonedBanner.style.top = '0';
     clonedBanner.style.width = '420px';
     clonedBanner.style.height = '880px';
     clonedBanner.style.transform = 'none';
-    
+    clonedBanner.style.overflow = 'visible'; // Ensure corners are not clipped
+
     // Wait for images to load in the clone
     await new Promise(resolve => setTimeout(resolve, 500));
     
@@ -748,16 +689,15 @@ async function downloadBanner({ filename = 'banner.png' } = {}) {
       backgroundColor: null,
       logging: false,
       onclone: function(clonedDoc, element) {
-        // Ensure all styles are properly applied
         const clonedElement = clonedDoc.getElementById(clonedBanner.id);
         if (clonedElement) {
           clonedElement.style.width = '420px';
           clonedElement.style.height = '880px';
           clonedElement.style.boxSizing = 'border-box';
+          clonedElement.style.overflow = 'visible';
         }
       }
     }).then(canvas => {
-      // Remove the clone
       document.body.removeChild(clonedBanner);
       
       if (canvas.width === 0 || canvas.height === 0) {
@@ -784,7 +724,6 @@ async function downloadBanner({ filename = 'banner.png' } = {}) {
           }
         });
         
-        // Restore button state
         downloadBtn.textContent = originalText;
         downloadBtn.disabled = false;
       }, 'image/png', 1);
@@ -796,11 +735,9 @@ async function downloadBanner({ filename = 'banner.png' } = {}) {
     console.error('Download error:', err);
     alert('Gagal membuat file. Pastikan untuk mengupload gambar lokal untuk hasil terbaik.');
     
-    // Restore button state
     downloadBtn.textContent = originalText;
     downloadBtn.disabled = false;
     
-    // Restore original image sources
     banner.querySelectorAll('img').forEach(img => {
       if (img.dataset._origSrc) { 
         img.src = img.dataset._origSrc; 
