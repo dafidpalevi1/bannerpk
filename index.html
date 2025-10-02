@@ -248,7 +248,7 @@
       }
       #round-booster {
         font-size: 14px;
-        bottom: 26.4%;
+        bottom: 26%;
       }
       
       .circle-left {
@@ -445,7 +445,7 @@
     previewImage('uploadLeft','circleLeft');
     previewImage('uploadRight','circleRight');
 
-    // Fungsi download gambar yang lebih sederhana dan reliable
+    // Fungsi download gambar dengan kualitas tinggi
     document.getElementById('downloadBtn').addEventListener('click', function() {
       const downloadBtn = this;
       const originalText = downloadBtn.textContent;
@@ -454,60 +454,71 @@
       downloadBtn.textContent = '⏳ Mengunduh...';
       downloadBtn.disabled = true;
 
-      // Simpan style asli
+      // Buat clone dari overlay untuk capture yang lebih baik
       const overlay = document.getElementById('overlay');
-      const originalStyle = overlay.style.cssText;
+      const clone = overlay.cloneNode(true);
       
-      // Temporary styling untuk capture yang lebih baik
-      overlay.style.width = '500px';
-      overlay.style.height = '888px';
-      overlay.style.position = 'fixed';
-      overlay.style.left = '50%';
-      overlay.style.top = '50%';
-      overlay.style.transform = 'translate(-50%, -50%)';
-      overlay.style.zIndex = '9999';
+      // Set style untuk clone agar lebih optimal
+      clone.style.width = '500px';
+      clone.style.height = '888px'; // 500 * 16/9 = 888.88
+      clone.style.position = 'fixed';
+      clone.style.left = '-9999px';
+      clone.style.top = '0';
+      clone.style.transform = 'none';
+      
+      document.body.appendChild(clone);
 
-      // Tunggu sebentar untuk render ulang
-      setTimeout(() => {
-        // Capture langsung dari element asli
-        html2canvas(overlay, {
-          scale: 2, // Scale optimal
-          useCORS: true,
-          allowTaint: false,
-          backgroundColor: null,
-          logging: false,
-          width: 500,
-          height: 888
-        }).then(canvas => {
-          // Convert canvas to image
-          const image = canvas.toDataURL('image/png', 1.0);
-          
-          // Create download link
-          const link = document.createElement('a');
-          link.download = 'pk-match-design.png';
-          link.href = image;
-          
-          // Trigger download
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          // Kembalikan style asli
-          overlay.style.cssText = originalStyle;
-          
-          // Reset button
-          downloadBtn.textContent = originalText;
-          downloadBtn.disabled = false;
-          
-        }).catch(error => {
-          console.error('Error generating image:', error);
-          alert('Error generating image. Please try again.');
-          // Kembalikan style asli jika error
-          overlay.style.cssText = originalStyle;
-          downloadBtn.textContent = originalText;
-          downloadBtn.disabled = false;
-        });
-      }, 100);
+      // Capture dengan setting optimal untuk kualitas tinggi
+      html2canvas(clone, {
+        scale: 3, // Scale lebih tinggi untuk kualitas terbaik
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: null,
+        logging: false,
+        width: 500,
+        height: 888,
+        onclone: function(clonedDoc) {
+          // Pastikan semua gambar di clone sudah load
+          const images = clonedDoc.querySelectorAll('img');
+          images.forEach(img => {
+            if (!img.complete) {
+              img.onload = function() {
+                // Gambar sudah load, lanjut capture
+              };
+            }
+          });
+        }
+      }).then(canvas => {
+        // Convert canvas to image dengan kualitas maksimal
+        const image = canvas.toDataURL('image/png', 1.0);
+        
+        // Create download link
+        const link = document.createElement('a');
+        link.download = 'pk-match-design.png';
+        link.href = image;
+        
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Hapus clone
+        document.body.removeChild(clone);
+        
+        // Reset button
+        downloadBtn.textContent = originalText;
+        downloadBtn.disabled = false;
+        
+      }).catch(error => {
+        console.error('Error generating image:', error);
+        alert('Error generating image. Please try again.');
+        // Hapus clone jika ada error
+        if (document.body.contains(clone)) {
+          document.body.removeChild(clone);
+        }
+        downloadBtn.textContent = originalText;
+        downloadBtn.disabled = false;
+      });
     });
 
     // Validasi form sebelum download
